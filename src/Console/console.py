@@ -1,5 +1,6 @@
-from AES import *
+from src.Logic.AES_logic import *
 class Console:
+
     def main(self) -> None:
         print("Menú de AES:")
         print("1. Encriptar mensaje")

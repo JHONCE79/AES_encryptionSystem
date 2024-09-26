@@ -1,8 +1,7 @@
-from Logic import *
+from src.Logic.logic import *
 class AES:
     """
     Class for AES-128 encryption with CBC mode and PKCS#7.
-
     This is a raw implementation of AES, without key stretching or IV
     management. Unless you need that, please use `encrypt` and `decrypt`.
     """
@@ -128,143 +127,6 @@ class AES:
 
         return unpad(b''.join(blocks))
 
-    def encrypt_pcbc(self, plaintext, iv):
-        """
-        Encrypts `plaintext` using PCBC mode and PKCS#7 padding, with the given
-        initialization vector (iv).
-        """
-        assert len(iv) == 16
-
-        plaintext = pad(plaintext)
-
-        blocks = []
-        prev_ciphertext = iv
-        prev_plaintext = bytes(16)
-        for plaintext_block in split_blocks(plaintext):
-            # PCBC mode encrypt: encrypt(plaintext_block XOR (prev_ciphertext XOR prev_plaintext))
-            ciphertext_block = self.encrypt_block(xor_bytes(plaintext_block, xor_bytes(prev_ciphertext, prev_plaintext)))
-            blocks.append(ciphertext_block)
-            prev_ciphertext = ciphertext_block
-            prev_plaintext = plaintext_block
-
-        return b''.join(blocks)
-
-    def decrypt_pcbc(self, ciphertext, iv):
-        """
-        Decrypts `ciphertext` using PCBC mode and PKCS#7 padding, with the given
-        initialization vector (iv).
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        prev_ciphertext = iv
-        prev_plaintext = bytes(16)
-        for ciphertext_block in split_blocks(ciphertext):
-            # PCBC mode decrypt: (prev_plaintext XOR prev_ciphertext) XOR decrypt(ciphertext_block)
-            plaintext_block = xor_bytes(xor_bytes(prev_ciphertext, prev_plaintext), self.decrypt_block(ciphertext_block))
-            blocks.append(plaintext_block)
-            prev_ciphertext = ciphertext_block
-            prev_plaintext = plaintext_block
-
-        return unpad(b''.join(blocks))
-
-    def encrypt_cfb(self, plaintext, iv):
-        """
-        Encrypts `plaintext` with the given initialization vector (iv).
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        prev_ciphertext = iv
-        for plaintext_block in split_blocks(plaintext, require_padding=False):
-            # CFB mode encrypt: plaintext_block XOR encrypt(prev_ciphertext)
-            ciphertext_block = xor_bytes(plaintext_block, self.encrypt_block(prev_ciphertext))
-            blocks.append(ciphertext_block)
-            prev_ciphertext = ciphertext_block
-
-        return b''.join(blocks)
-
-    def decrypt_cfb(self, ciphertext, iv):
-        """
-        Decrypts `ciphertext` with the given initialization vector (iv).
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        prev_ciphertext = iv
-        for ciphertext_block in split_blocks(ciphertext, require_padding=False):
-            # CFB mode decrypt: ciphertext XOR decrypt(prev_ciphertext)
-            plaintext_block = xor_bytes(ciphertext_block, self.encrypt_block(prev_ciphertext))
-            blocks.append(plaintext_block)
-            prev_ciphertext = ciphertext_block
-
-        return b''.join(blocks)
-
-    def encrypt_ofb(self, plaintext, iv):
-        """
-        Encrypts `plaintext` using OFB mode initialization vector (iv).
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        previous = iv
-        for plaintext_block in split_blocks(plaintext, require_padding=False):
-            # OFB mode encrypt: plaintext_block XOR encrypt(previous)
-            block = self.encrypt_block(previous)
-            ciphertext_block = xor_bytes(plaintext_block, block)
-            blocks.append(ciphertext_block)
-            previous = block
-
-        return b''.join(blocks)
-
-    def decrypt_ofb(self, ciphertext, iv):
-        """
-        Decrypts `ciphertext` using OFB mode initialization vector (iv).
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        previous = iv
-        for ciphertext_block in split_blocks(ciphertext, require_padding=False):
-            # OFB mode decrypt: ciphertext XOR encrypt(previous)
-            block = self.encrypt_block(previous)
-            plaintext_block = xor_bytes(ciphertext_block, block)
-            blocks.append(plaintext_block)
-            previous = block
-
-        return b''.join(blocks)
-
-    def encrypt_ctr(self, plaintext, iv):
-        """
-        Encrypts `plaintext` using CTR mode with the given nounce/IV.
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        nonce = iv
-        for plaintext_block in split_blocks(plaintext, require_padding=False):
-            # CTR mode encrypt: plaintext_block XOR encrypt(nonce)
-            block = xor_bytes(plaintext_block, self.encrypt_block(nonce))
-            blocks.append(block)
-            nonce = inc_bytes(nonce)
-
-        return b''.join(blocks)
-
-    def decrypt_ctr(self, ciphertext, iv):
-        """
-        Decrypts `ciphertext` using CTR mode with the given nounce/IV.
-        """
-        assert len(iv) == 16
-
-        blocks = []
-        nonce = iv
-        for ciphertext_block in split_blocks(ciphertext, require_padding=False):
-            # CTR mode decrypt: ciphertext XOR encrypt(nonce)
-            block = xor_bytes(ciphertext_block, self.encrypt_block(nonce))
-            blocks.append(block)
-            nonce = inc_bytes(nonce)
-
-        return b''.join(blocks)
 
 
 import os
@@ -337,13 +199,3 @@ def decrypt(key, ciphertext, workload=100000):
     assert compare_digest(hmac, expected_hmac), 'Ciphertext corrupted or tampered.'
 
     return AES(key).decrypt_cbc(ciphertext, iv)
-
-
-def benchmark():
-    key = b'P' * 16
-    message = b'M' * 16
-    aes = AES(key)
-    for i in range(30000):
-        aes.encrypt_block(message)
-
-__all__ = ["encrypt", "decrypt", "AES"]

@@ -132,16 +132,6 @@ def xor_bytes(a, b):
     """ Returns a new byte array with the elements xor'ed. """
     return bytes(i^j for i, j in zip(a, b))
 
-def inc_bytes(a):
-    """ Returns a new byte array with the value increment by 1 """
-    out = list(a)
-    for i in reversed(range(len(out))):
-        if out[i] == 0xFF:
-            out[i] = 0
-        else:
-            out[i] += 1
-            break
-    return bytes(out)
 
 def pad(plaintext):
     """
