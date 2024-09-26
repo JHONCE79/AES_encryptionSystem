@@ -1,31 +1,55 @@
-from src.Logic.AES_logic import *
+from src.Logic.AES_logic import encrypt, decrypt
+
 class Console:
 
-    def main(self) -> None:
-        print("Menú de AES:")
-        print("1. Encriptar mensaje")
-        print("2. Desencriptar mensaje")
-        print("3. Salir")
+    def __init__(self):
+        self.aes_instance = None
 
+    @staticmethod
+    def display_menu():
+        print("Encryption System Menu")
+        print("1. Encrypt a message")
+        print("2. Decrypt a message")
+        print("3. Exit")
+        print()
+
+    def get_user_choice(self):
+        return input("Select an option (1-3): ")
+
+    def get_master_key(self):
+        return input("Enter the encryption key: ")
+
+    def get_message(self):
+        return input("Enter the message: ")
+
+    def encrypt_message(self):
+        key = self.get_master_key()
+        message = self.get_message()
+        encrypted = encrypt(key, message)
+        print("Encrypted Message:", encrypted.hex())
+
+    def decrypt_message(self):
+        key = self.get_master_key()
+        encrypted_hex = input("Enter the encrypted message (in hexadecimal): ")
+        encrypted_bytes = bytes.fromhex(encrypted_hex)
+        decrypted = decrypt(key, encrypted_bytes)
+        print("Decrypted Message: ", decrypted.decode("utf-8"))
+
+    def run(self):
         while True:
-            opcion = input("Ingrese una opción: ")
+            self.display_menu()
+            choice = self.get_user_choice()
 
-            if opcion == "1":
-                clave = input("Ingrese la clave de encriptación: ")
-                mensaje = input("Ingrese el mensaje a encriptar: ")
-                encriptado = encrypt(clave, mensaje)
-                print("Mensaje encriptado:", encriptado.hex())
-            elif opcion == "2":
-                clave = input("Ingrese la clave de desencriptación: ")
-                mensaje_encriptado = input("Ingrese el mensaje encriptado (en hexadecimal): ")
-                mensaje_encriptado = bytes.fromhex(mensaje_encriptado)
-                desencriptado = decrypt(clave, mensaje_encriptado)
-                print("Mensaje desencriptado:", desencriptado.decode("utf-8"))
-            elif opcion == "3":
-                print("Adiós!")
+            if choice == "1":
+                self.encrypt_message()
+            elif choice == "2":
+                self.decrypt_message()
+            elif choice == "3":
+                print("Exiting the Encryption System. Goodbye!")
                 break
             else:
-                print("Opción inválida. Intente de nuevo.")
+                print("Invalid choice. Please select a valid option. \n")
 
-    if __name__ == "__main__":
-        main('self')
+if __name__ == "__main__":
+    console = Console()
+    console.run()
