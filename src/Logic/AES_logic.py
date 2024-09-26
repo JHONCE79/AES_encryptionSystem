@@ -1,4 +1,48 @@
 from src.Logic.logic import *
+
+class EncryptDecryptWithoutKey(Exception):
+    """
+    Custom exception to indicate that the entered key is empty
+    """
+
+    def __init__(self):
+        super().__init__(f"Cannot encrypt or decrypt if the key is empty, please try entering a valid key.")
+
+class EncryptDecryptEmptyMessage(Exception):
+    """
+    Custom exception to indicate that the entered message is empty
+    """
+
+    def __init__(self):
+        super().__init__(f"Cannot encrypt or an empty message, please try entering a valid message.")
+
+class InvalidKeyLength(Exception):
+    """
+    Custom exception to indicate that the length of the entered key is invalid
+    """
+
+    def __init__(self):
+        super().__init__(f"Invalid key length, please try entering a valid key.")
+
+class UnsupportedMessageType(Exception):
+    """
+    Custom exception to indicate that the entered message is not valid
+    """
+
+    def __init__(self):
+        super().__init__(f"Unsupported message type, please try entering a valid message.")
+
+
+class IncorrectKey(Exception):
+    """
+    Custom exception to indicate that the entered key is incorrect
+    """
+
+    def __init__(self):
+        super().__init__(f"Key is incorrect, please try entering a valid key.")
+
+
+
 class AES:
     """
     Class for AES-128 encryption with CBC mode and PKCS#7.
@@ -13,6 +57,7 @@ class AES:
         assert len(master_key) in AES.rounds_by_key_size
         self.n_rounds = AES.rounds_by_key_size[len(master_key)]
         self._key_matrices = self._expand_key(master_key)
+
 
     def _expand_key(self, master_key):
         """
@@ -159,10 +204,27 @@ def encrypt(key, plaintext, workload=100000):
 
     The exact algorithm is specified in the module docstring.
     """
+
     if isinstance(key, str):
         key = key.encode('utf-8')
     if isinstance(plaintext, str):
         plaintext = plaintext.encode('utf-8')
+
+
+    if key is None or len(key) == 0:
+        raise EncryptDecryptWithoutKey()
+    if not plaintext:
+        raise EncryptDecryptEmptyMessage()
+    if len(key) not in [16, 24, 32]:
+        raise InvalidKeyLength()
+
+    for char in plaintext.decode('utf-8'):
+        if ord(char) > 127:  # Si el valor Unicode es mayor que 127, no es ASCII
+            raise UnsupportedMessageType()
+
+
+
+
 
     salt = os.urandom(SALT_SIZE)
     key, hmac_key, iv = get_key_iv(key, salt, workload)
@@ -180,6 +242,15 @@ def decrypt(key, ciphertext, workload=100000):
 
     The exact algorithm is specified in the module docstring.
     """
+
+    if key is None or len(key) == 0:
+        raise EncryptDecryptWithoutKey()
+    if not ciphertext:
+        raise EncryptDecryptEmptyMessage()
+    if len(key) not in [16, 24, 32]:
+        raise InvalidKeyLength()
+
+
 
     assert len(ciphertext) % 16 == 0, "Ciphertext must be made of full 16-byte blocks."
 
