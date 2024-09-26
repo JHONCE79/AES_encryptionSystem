@@ -6,6 +6,15 @@ class Console:
         self.aes_instance = None
 
     @staticmethod
+    def show_welcome():
+        print()
+        print("================================")
+        print("WELCOME TO THE ENCRYPTION SYSTEM")
+        print("================================")
+        print()
+
+
+    @staticmethod
     def display_menu():
         print("Encryption System Menu")
         print("1. Encrypt a message")
@@ -37,6 +46,7 @@ class Console:
 
     def run(self):
         while True:
+            self.show_welcome()
             self.display_menu()
             choice = self.get_user_choice()
 
