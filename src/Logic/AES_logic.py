@@ -24,6 +24,7 @@ class InvalidKeyLength(Exception):
     def __init__(self):
         super().__init__(f"Invalid key length, please try entering a valid key.")
 
+
 class UnsupportedMessageType(Exception):
     """
     Custom exception to indicate that the entered message is not valid
@@ -37,10 +38,8 @@ class IncorrectKey(Exception):
     """
     Custom exception to indicate that the entered key is incorrect
     """
-
     def __init__(self):
         super().__init__(f"Key is incorrect, please try entering a valid key.")
-
 
 
 class AES:
@@ -223,9 +222,6 @@ def encrypt(key, plaintext, workload=100000):
             raise UnsupportedMessageType()
 
 
-
-
-
     salt = os.urandom(SALT_SIZE)
     key, hmac_key, iv = get_key_iv(key, salt, workload)
     ciphertext = AES(key).encrypt_cbc(plaintext, iv)
@@ -243,13 +239,13 @@ def decrypt(key, ciphertext, workload=100000):
     The exact algorithm is specified in the module docstring.
     """
 
+    #error's conditions
     if key is None or len(key) == 0:
         raise EncryptDecryptWithoutKey()
     if not ciphertext:
         raise EncryptDecryptEmptyMessage()
     if len(key) not in [16, 24, 32]:
         raise InvalidKeyLength()
-
 
 
     assert len(ciphertext) % 16 == 0, "Ciphertext must be made of full 16-byte blocks."
