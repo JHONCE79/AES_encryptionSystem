@@ -1,20 +1,37 @@
-from src.Logic.AES_logic import encrypt, decrypt
-
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.graphics import Color, Rectangle
+
+from src.Logic.AES_logic import decrypt, encrypt
+
+
+class CustomGridLayout(GridLayout):
+    def __init__(self, **kwargs):
+        super(CustomGridLayout, self).__init__(**kwargs)
+        # Usar Canvas para dibujar el fondo
+        with self.canvas.before:
+            Color(0, 0.396, 0.443, 1)  # Color azul (R, G, B, A)
+            self.rect = Rectangle(size=self.size, pos=self.pos)
+
+        # Actualizar el tamaño y la posición del fondo cuando cambien los del layout
+        self.bind(size=self._update_rect, pos=self._update_rect)
+
+    def _update_rect(self, instance, value):
+        self.rect.pos = instance.pos
+        self.rect.size = instance.size
 
 
 class MenuScreen(Screen):
     def __init__(self, **kwargs):
         super(MenuScreen, self).__init__(**kwargs)
-        contenedor = GridLayout(cols=1, padding=10, spacing=10)
+        contenedor = CustomGridLayout(cols=1, padding=10, spacing=10)
 
-        contenedor.add_widget(Label(text="WELCOME TO THE ENCRYPTION SYSTEM", font_size=30))
-        contenedor.add_widget(Label(text="Do you want to encrypt or decrypt?"))
+        contenedor.add_widget(Label(text="WELCOME TO THE ENCRYPTION SYSTEM", font_size=35))
+        contenedor.add_widget(Label(text="Do you want to encrypt or decrypt?", font_size=25))
 
         encrypt_button = Button(text="Encrypt a message")
         contenedor.add_widget(encrypt_button)
@@ -37,7 +54,7 @@ class MenuScreen(Screen):
 class EncryptScreen(Screen):
     def __init__(self, **kwargs):
         super(EncryptScreen, self).__init__(**kwargs)
-        contenedor = GridLayout(cols=1, padding=10, spacing=10)
+        contenedor = CustomGridLayout(cols=1, padding=10, spacing=10)
 
         contenedor.add_widget(Label(text="Enter the encryption key: "))
         self.password = TextInput(password=True)
@@ -71,7 +88,6 @@ class EncryptScreen(Screen):
             self.encrypted_message.text = encrypted_message_hex
 
         except Exception as e:
-            # En caso de error, cambiar a la pantalla de error
             self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
             self.manager.current = 'error'
 
@@ -80,7 +96,6 @@ class EncryptScreen(Screen):
         self.manager.current = 'menu'
 
     def clear_fields(self):
-        # Limpiar los campos
         self.password.text = ""
         self.message.text = ""
         self.encrypted_message.text = ""
@@ -89,7 +104,7 @@ class EncryptScreen(Screen):
 class DecryptScreen(Screen):
     def __init__(self, **kwargs):
         super(DecryptScreen, self).__init__(**kwargs)
-        contenedor = GridLayout(cols=1, padding=10, spacing=10)
+        contenedor = CustomGridLayout(cols=1, padding=10, spacing=10)
 
         contenedor.add_widget(Label(text="Enter the encryption key: "))
         self.password = TextInput(password=True)
@@ -117,7 +132,6 @@ class DecryptScreen(Screen):
         self.manager.current = 'menu'
 
     def clear_fields(self):
-        # Limpiar los campos
         self.password.text = ""
         self.message.text = ""
         self.encrypted_message.text = ""
@@ -133,7 +147,6 @@ class DecryptScreen(Screen):
             self.encrypted_message.text = decrypted_message.decode()
 
         except Exception as e:
-            # En caso de error, cambiar a la pantalla de error
             self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
             self.manager.current = 'error'
 
@@ -141,9 +154,9 @@ class DecryptScreen(Screen):
 class ErrorScreen(Screen):
     def __init__(self, **kwargs):
         super(ErrorScreen, self).__init__(**kwargs)
-        contenedor = GridLayout(cols=1, padding=5, spacing=5)
+        contenedor = CustomGridLayout(cols=1, padding=10, spacing=10)
 
-        self.error_label = Label(text="Error: ", font_size=16)
+        self.error_label = Label(text="Error: ", font_size=20)
         contenedor.add_widget(self.error_label)
 
         back_button = Button(text="Back to Menu")
@@ -156,7 +169,6 @@ class ErrorScreen(Screen):
         self.error_label.text = message
 
     def go_back(self, instance):
-        # Limpiar los campos de las pantallas de encriptación y desencriptación
         self.manager.get_screen('encrypt').clear_fields()
         self.manager.get_screen('decrypt').clear_fields()
         self.manager.current = 'menu'
