@@ -1,6 +1,5 @@
 from src.Logic.AES_logic import encrypt, decrypt
 
-
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.gridlayout import GridLayout
@@ -35,13 +34,12 @@ class MenuScreen(Screen):
         self.manager.current = 'decrypt'
 
 
-
 class EncryptScreen(Screen):
     def __init__(self, **kwargs):
         super(EncryptScreen, self).__init__(**kwargs)
         contenedor = GridLayout(cols=1, padding=10, spacing=10)
 
-        contenedor.add_widget(Label(text="Enter the encryption key (must have exactly 16, 24 or 32 characters): "))
+        contenedor.add_widget(Label(text="Enter the encryption key: "))
         self.password = TextInput(password=True)
         contenedor.add_widget(self.password)
 
@@ -60,7 +58,6 @@ class EncryptScreen(Screen):
         contenedor.add_widget(back_button_go_back)
         back_button_go_back.bind(on_press=self.go_back)
 
-
         self.add_widget(contenedor)
 
     def encrypt(self, instance):
@@ -74,13 +71,19 @@ class EncryptScreen(Screen):
             self.encrypted_message.text = encrypted_message_hex
 
         except Exception as e:
-            # En caso de error, muestra un mensaje en el label
-            #CAMBIAR LOS CASOS DE ERROS PARA LOS UWE SE VAN A CREAR
-            self.encrypted_message.text = f"Error: {str(e)}"
-
+            # En caso de error, cambiar a la pantalla de error
+            self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
+            self.manager.current = 'error'
 
     def go_back(self, instance):
+        self.clear_fields()
         self.manager.current = 'menu'
+
+    def clear_fields(self):
+        # Limpiar los campos
+        self.password.text = ""
+        self.message.text = ""
+        self.encrypted_message.text = ""
 
 
 class DecryptScreen(Screen):
@@ -92,7 +95,7 @@ class DecryptScreen(Screen):
         self.password = TextInput(password=True)
         contenedor.add_widget(self.password)
 
-        contenedor.add_widget(Label(text="Enter the message to decrypt(in hexadecimal): "))
+        contenedor.add_widget(Label(text="Enter the message to decrypt (in hexadecimal): "))
         self.message = TextInput()
         contenedor.add_widget(self.message)
 
@@ -110,7 +113,14 @@ class DecryptScreen(Screen):
         self.add_widget(contenedor)
 
     def go_back(self, instance):
+        self.clear_fields()
         self.manager.current = 'menu'
+
+    def clear_fields(self):
+        # Limpiar los campos
+        self.password.text = ""
+        self.message.text = ""
+        self.encrypted_message.text = ""
 
     def decrypt(self, instance):
         try:
@@ -123,9 +133,33 @@ class DecryptScreen(Screen):
             self.encrypted_message.text = decrypted_message.decode()
 
         except Exception as e:
-            # En caso de error, mostrar el mensaje de error en el mismo TextInput
-            #CAMBIAR LOS CASOS DE ERROS PARA LOS UWE SE VAN A CREAR
-            self.encrypted_message.text = f"Error: {str(e)}"
+            # En caso de error, cambiar a la pantalla de error
+            self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
+            self.manager.current = 'error'
+
+
+class ErrorScreen(Screen):
+    def __init__(self, **kwargs):
+        super(ErrorScreen, self).__init__(**kwargs)
+        contenedor = GridLayout(cols=1, padding=5, spacing=5)
+
+        self.error_label = Label(text="Error: ", font_size=16)
+        contenedor.add_widget(self.error_label)
+
+        back_button = Button(text="Back to Menu")
+        contenedor.add_widget(back_button)
+        back_button.bind(on_press=self.go_back)
+
+        self.add_widget(contenedor)
+
+    def set_error_message(self, message):
+        self.error_label.text = message
+
+    def go_back(self, instance):
+        # Limpiar los campos de las pantallas de encriptación y desencriptación
+        self.manager.get_screen('encrypt').clear_fields()
+        self.manager.get_screen('decrypt').clear_fields()
+        self.manager.current = 'menu'
 
 
 class AESapp(App):
@@ -134,6 +168,7 @@ class AESapp(App):
         contenedor.add_widget(MenuScreen(name='menu'))
         contenedor.add_widget(EncryptScreen(name='encrypt'))
         contenedor.add_widget(DecryptScreen(name='decrypt'))
+        contenedor.add_widget(ErrorScreen(name='error'))
         return contenedor
 
 if __name__ == '__main__':
