@@ -32,6 +32,16 @@ The project is divided into two main folders, `src` and a `tests` folder.
 
 ```python src/GUI/GuiSystem.py```
 
+5. If you want to run the tests, you must navigate to the `tests` folder:
+
+**Encryption Test** = ```Test/EncryptionAES_test.py```
+
+**Decryption Test** = ```Test/DecryptionAES_test.py```
+
+```python Test/EncryptionAES_test.py```
+
+```python Test/DecryptionAES_test.py```
+
 ## How does the program work:
 When you run the program, you will see a menu with the following options:
 ```
