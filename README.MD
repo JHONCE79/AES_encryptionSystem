@@ -5,17 +5,6 @@ This program is a text encryption and decryption system, which uses the AES algo
 
 ### Preconditions
 1. First of all, make sure you have Python installed on your computer.
-2. Make sure you have the pycryptodome library installed. If you don't have it, you can install it by running the following command in the terminal:
-
-```pip install pycryptodome```
-
-3. Make sure you have Crypto installed. If you don't have it, you can install it by running the following command in the terminal:
-
-```pip install Crypto```
-
-- You can check if everything is installed correctly by running this command:
-
-```pip list```
 
 ## How to use:
 First you should clone the repository to your computer.
@@ -24,7 +13,6 @@ First you should clone the repository to your computer.
 1. Navigate to the folder where the repository was cloned
 
 ```src/Console/Console.py```
-
 
 2. Run the main file:
 
