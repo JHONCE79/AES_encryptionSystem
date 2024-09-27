@@ -22,7 +22,7 @@ class InvalidKeyLength(Exception):
     """
 
     def __init__(self):
-        super().__init__(f"Invalid key length, please try entering a valid key.")
+        super().__init__(f"Invalid key length, please try entering a valid key. The key must have exactly 16, 24 or 32 characters")
 
 
 class UnsupportedMessageType(Exception):
