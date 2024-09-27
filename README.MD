@@ -1,25 +1,38 @@
-**Authors:** Paula Meneses y Santiago Tavera
+## Authors: 
+Paula Meneses y Santiago Tavera
 
 # Text encryption and decryption system
 This program is a text encryption and decryption system, which uses the AES algorithm to encrypt and decrypt a text.
 
 ### Preconditions
-1. First of all, make sure you have Python installed on your computer.
+1. Make sure you have Python installed on your computer.
 
-## How to use:
+## The repository contains:
+The project is divided into two main folders, `src` and a `tests` folder. 
+
+`src` contains the main file of the program, which is the `Console.py` file. This file contains the main menu of the program and the logic to encrypt and decrypt the text. In addition, the `src` folder contains the `AES.py` file, which contains the functions to encrypt and decrypt the text. Also it has the `GuiSystem.py` file, which contains the functions to encrypt and decrypt the text using a GUI made with **Kivy**. 
+
+`tests` contains the unit `tests` (normal cases, special or extraordinary cases, and error cases). 
 First you should clone the repository to your computer.
 
-**To run the program outside the development environment:**
-1. Navigate to the folder where the repository was cloned
+## How to run the program:
+1. CLone the repository to your computer.
+
+```git clone "https://github.com/PaulaS06/AES_encryptionSystem.git"```
+
+2. Navigate to the folder where the repository was cloned
 
 ```src/Console/Console.py```
 
-2. Run the main file:
+3. Run the main file to excute the program on the Console:
 
 ```python src/Console/Console.py```
 
+4. To run the program with the GUI:
+
+```python src/GUI/GuiSystem.py```
+
 ## How does the program work:
-For now the program only works by the console.
 When you run the program, you will see a menu with the following options:
 ```
 1. Encrypt text
