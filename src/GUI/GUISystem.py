@@ -41,7 +41,7 @@ class EncryptScreen(Screen):
         super(EncryptScreen, self).__init__(**kwargs)
         contenedor = GridLayout(cols=1, padding=10, spacing=10)
 
-        contenedor.add_widget(Label(text="Enter the encryption key: "))
+        contenedor.add_widget(Label(text="Enter the encryption key (must have exactly 16, 24 or 32 characters): "))
         self.password = TextInput(password=True)
         contenedor.add_widget(self.password)
 

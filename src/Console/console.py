@@ -26,7 +26,7 @@ class Console:
         return input("Select an option (1-3): ")
 
     def get_master_key(self):
-        return input("Enter the encryption key: ")
+        return input("Enter the encryption key: (must have exactly 16, 24 or 32 characters): ")
 
     def get_message(self):
         return input("Enter the message: ")
