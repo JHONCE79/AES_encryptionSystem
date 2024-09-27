@@ -10,10 +10,10 @@ This program is a text encryption and decryption system, which uses the AES algo
 ## The repository contains:
 The project is divided into two main folders, `src` and a `tests` folder. 
 
-`src` contains the main file of the program, which is the `Console.py` file. This file contains the main menu of the program and the logic to encrypt and decrypt the text. In addition, the `src` folder contains the `AES.py` file, which contains the functions to encrypt and decrypt the text. Also it has the `GuiSystem.py` file, which contains the functions to encrypt and decrypt the text using a GUI made with **Kivy**. 
+`src` contains the main file of the program, which is the `Console.py` file. This file contains the main menu of the program and the logic to encrypt and decrypt the text. In addition, it contains the `AES.py` file, which contains the functions to encrypt and decrypt the text. Also it has the `GuiSystem.py` file, which contains the functions to encrypt and decrypt the text using a GUI made with **Kivy**. 
 
 `tests` contains the unit `tests` (normal cases, special or extraordinary cases, and error cases). 
-First you should clone the repository to your computer.
+
 
 ## How to run the program:
 1. CLone the repository to your computer.
