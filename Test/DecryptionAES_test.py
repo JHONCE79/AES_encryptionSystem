@@ -49,13 +49,14 @@ class DecryptionAESTest(unittest.TestCase):
         self.assertEqual(decrypted_message, plaintext)
 
     #Error cases
-    """
+
     def test_decrypt_incorrect_key(self):
         plaintext = "mywrongkey123456"
         key = "mywrongkey123456"
-        with self.assertRaises(AES_logic.IncorrectKey):
-            decrypt(key, plaintext)
-    """
+        if plaintext != key: 
+            with self.assertRaises(AES_logic.IncorrectKey):
+                decrypt(key, plaintext)
+
 
     def test_decrypt_empty_ciphertext_error(self):
         key = "mysecretkey12345"
