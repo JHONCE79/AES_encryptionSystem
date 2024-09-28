@@ -1,5 +1,10 @@
 import unittest
 
+#import sys
+#sys.path.append("src")
+#Logic import AES_logic
+#Logic.AES_logic import decrypt, encrypt
+
 from src.Logic import AES_logic
 from src.Logic.AES_logic import AES, encrypt, decrypt
 

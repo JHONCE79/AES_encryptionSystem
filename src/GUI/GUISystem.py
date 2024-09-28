@@ -6,6 +6,10 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
 
+#import sys
+#sys.path.append("src")
+#Logic.AES_logic import decrypt, encrypt
+
 from src.Logic.AES_logic import decrypt, encrypt
 
 

@@ -1,3 +1,7 @@
+#import sys
+#sys.path.append("src")
+#Logic.logic import *
+
 from src.Logic.logic import *
 
 class EncryptDecryptWithoutKey(Exception):
@@ -195,6 +199,16 @@ def get_key_iv(password, salt, workload=100000):
     iv = stretched[:IV_SIZE]
     return aes_key, hmac_key, iv
 
+def validate_encryption_inputs(key, plaintext):
+    if key is None or len(key) == 0:
+        raise EncryptDecryptWithoutKey()
+    if not plaintext:
+        raise EncryptDecryptEmptyMessage()
+    if len(key) not in [16, 24, 32]:
+        raise InvalidKeyLength()
+    for char in plaintext.decode('utf-8'):
+        if ord(char) > 127:  # Si el valor Unicode es mayor que 127, no es ASCII
+            raise UnsupportedMessageType()
 
 def encrypt(key, plaintext, workload=100000):
     """
@@ -209,18 +223,7 @@ def encrypt(key, plaintext, workload=100000):
     if isinstance(plaintext, str):
         plaintext = plaintext.encode('utf-8')
 
-
-    if key is None or len(key) == 0:
-        raise EncryptDecryptWithoutKey()
-    if not plaintext:
-        raise EncryptDecryptEmptyMessage()
-    if len(key) not in [16, 24, 32]:
-        raise InvalidKeyLength()
-
-    for char in plaintext.decode('utf-8'):
-        if ord(char) > 127:  # Si el valor Unicode es mayor que 127, no es ASCII
-            raise UnsupportedMessageType()
-
+    validate_encryption_inputs(key, plaintext)
 
     salt = os.urandom(SALT_SIZE)
     key, hmac_key, iv = get_key_iv(key, salt, workload)
@@ -231,6 +234,14 @@ def encrypt(key, plaintext, workload=100000):
     return hmac + salt + ciphertext
 
 
+def validate_decryption_inputs(key, ciphertext):
+    if key is None or len(key) == 0:
+        raise EncryptDecryptWithoutKey()
+    if not ciphertext:
+        raise EncryptDecryptEmptyMessage()
+    if len(key) not in [16, 24, 32]:
+        raise InvalidKeyLength()
+
 def decrypt(key, ciphertext, workload=100000):
     """
     Decrypts `ciphertext` with `key` using AES-128, an HMAC to verify integrity,
@@ -239,13 +250,7 @@ def decrypt(key, ciphertext, workload=100000):
     The exact algorithm is specified in the module docstring.
     """
 
-    #error's conditions
-    if key is None or len(key) == 0:
-        raise EncryptDecryptWithoutKey()
-    if not ciphertext:
-        raise EncryptDecryptEmptyMessage()
-    if len(key) not in [16, 24, 32]:
-        raise InvalidKeyLength()
+    validate_decryption_inputs(key, ciphertext)
 
 
     assert len(ciphertext) % 16 == 0, "Ciphertext must be made of full 16-byte blocks."
