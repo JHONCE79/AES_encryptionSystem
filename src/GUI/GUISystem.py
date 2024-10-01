@@ -4,7 +4,8 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from kivy.graphics import Color, Rectangle
+from kivy.uix.boxlayout import BoxLayout
+from kivy.graphics import Color, Rectangle, RoundedRectangle
 
 #import sys
 #sys.path.append("src")
@@ -18,7 +19,7 @@ class CustomGridLayout(GridLayout):
         super(CustomGridLayout, self).__init__(**kwargs)
         # Usar Canvas para dibujar el fondo
         with self.canvas.before:
-            Color(0, 0.396, 0.443, 1)  # Color azul (R, G, B, A)
+            Color(0.231, 0.118, 0.251)  # Color azul (R, G, B, A)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         # Actualizar el tamaño y la posición del fondo cuando cambien los del layout
@@ -37,11 +38,11 @@ class MenuScreen(Screen):
         contenedor.add_widget(Label(text="WELCOME TO THE ENCRYPTION SYSTEM", font_size=35))
         contenedor.add_widget(Label(text="Do you want to encrypt or decrypt?", font_size=25))
 
-        encrypt_button = Button(text="Encrypt a message")
+        encrypt_button = Button(text="Encrypt a message", background_color=(0.929, 0.741, 0.961))
         contenedor.add_widget(encrypt_button)
         encrypt_button.bind(on_press=self.go_to_encrypt)
 
-        decrypt_button = Button(text="Decrypt a message")
+        decrypt_button = Button(text="Decrypt a message", background_color=(0.929, 0.741, 0.961))
         contenedor.add_widget(decrypt_button)
         decrypt_button.bind(on_press=self.go_to_decrypt)
 
