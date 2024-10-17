@@ -1,72 +1,104 @@
-## Authors: 
-Paula Meneses y Santiago Tavera
+# Text Encryption and Decryption System
 
-# Text encryption and decryption system
-This program is a text encryption and decryption system, which uses the AES algorithm to encrypt and decrypt a text.
+## Original Authors:
 
-### Preconditions
-1. Make sure you have Python installed on your computer.
+Paula Meneses  
+Santiago Tavera
 
-## The repository contains:
-The project is divided into two main folders, `src` and a `tests` folder. 
+## Fork Authors:
 
-`src` contains the main file of the program, which is the `Console.py` file. This file contains the main menu of the program and the logic to encrypt and decrypt the text. In addition, it contains the `AES.py` file, which contains the functions to encrypt and decrypt the text. Also it has the `GuiSystem.py` file, which contains the functions to encrypt and decrypt the text using a GUI made with **Kivy**. 
+Tomás Córdoba  
+Samuel Villa
 
-`tests` contains the unit `tests` (normal cases, special or extraordinary cases, and error cases). 
+## Purpose
 
+This project provides a text encryption and decryption tool using the AES (Advanced Encryption Standard) algorithm. It allows users to securely encrypt a piece of text and decrypt it later using the same key. The system offers both a console-based and a graphical user interface (GUI) for performing these operations.
 
-## How to run the program:
-1. CLone the repository to your computer.
+## How does it work?
 
-```git clone "https://github.com/PaulaS06/AES_encryptionSystem.git"```
+Once the program is executed, users can choose to encrypt or decrypt text via a menu. The process requires the following steps:
 
-2. Navigate to the folder where the repository was cloned
+1. **Menu Options:**
+    - The user is presented with three options:
+      1. Encrypt text
+      2. Decrypt text
+      3. Exit
+2. **Encryption/Decryption Process:**
+    - For encryption, the user is prompted to enter the text to encrypt and a 16-character key.
+    - For decryption, the user must input the encrypted text and the same 16-character key.
+3. **Output:**
+    - After providing the required inputs, the program will display the encrypted or decrypted result.
 
-```src/Console/Console.py```
+## Project Structure
 
-3. Run the main file to excute the program on the Console:
+The project is organized into two main directories: `src` and `tests`.
 
-```python src/Console/Console.py```
+- **`src`:** Contains the core files needed to run the encryption and decryption system:
+  - `Console.py`: Main file that presents the console interface and handles user input for encryption and decryption.
+  - `AES.py`: Contains the AES encryption and decryption logic.
+  - `GuiSystem.py`: Provides the functions needed to run the system with a GUI built using **Kivy**.
+  
+- **`tests`:** Contains unit tests that check the system for normal, special, and error cases.
 
-4. To run the program with the GUI:
+## Installation and Use
 
-```python src/GUI/GuiSystem.py```
+### 1. Clone the Repository:
 
-5. If you want to run the tests, you must navigate to the `tests` folder:
+Run the following command in your terminal:
 
-**Encryption Test** = ```Test/EncryptionAES_test.py```
+    git clone "https://github.com/PaulaS06/AES_encryptionSystem.git"
 
-**Decryption Test** = ```Test/DecryptionAES_test.py```
+### 2. Navigate to the Project Directory:
 
-```python Test/EncryptionAES_test.py```
+Change your directory to where the repository was cloned:
 
-```python Test/DecryptionAES_test.py```
+    cd path\to\AES_encryptionSystem
 
-## How does the program work:
-When you run the program, you will see a menu with the following options:
-```
-1. Encrypt text
-2. Decrypt text
-3. Exit
-```
-The program will ask you to enter the number of the option you want to select.
+### 3. Create a Virtual Environment (Optional)
 
-4. If you select option 1, the program will ask you to enter the text you want to _encrypt_.
+It is recommended to create a virtual environment for the project:
 
-5. If you select option 2, the program will ask you to enter the text you want to _decrypt_.
+#### Windows:
 
-- If you select option 1 or 2, the program will ask you to enter the key you want to use to encrypt or decrypt the text.
-- The key **must** be 16 characters long.
+    py -m venv .venv
+    .venv\Scripts\activate
 
+#### macOS/Linux:
 
-- After entering the text and the key, the program will show you the encrypted or decrypted text.
+    python3 -m venv venv
+    source venv/bin/activate
 
-6. If you select option 3, the program will end.
+### 4. Install Requirements
 
+Install additional dependencies using the `requirements.txt` file:
 
-## Take into account:
-- The project includes a set of unit tests that are used to verify compliance with requirements. 
-To run the tests, you must install the Unittest dependency.
-You can install it by running the following command in the terminal:
+    pip install -r requirements.txt
 
-```pip install unittest```
+### 5. Execute the Program
+
+#### Console Execution:
+
+To run the program via the console, use the following command:
+
+    python src/Console/Console.py
+
+#### GUI Execution:
+
+To execute the program with a graphical interface, use this command:
+
+    python src/GUI/GuiSystem.py
+
+### 6. Running Tests
+
+To verify the system using unit tests, navigate to the `tests` directory and run the corresponding test files:
+
+    python tests/EncryptionAES_test.py
+    python tests/DecryptionAES_test.py
+
+## Notes
+
+- The encryption key **must** be exactly 16 characters long for the AES algorithm to function correctly.
+- The unit tests validate the program's behavior in both typical and edge cases.
+- To run the tests, you need to install the `unittest` package by running:
+
+    pip install unittest
