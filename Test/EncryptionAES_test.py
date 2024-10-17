@@ -1,12 +1,11 @@
 import unittest
 
-#import sys
-#sys.path.append("src")
-#Logic import AES_logic
-#Logic.AES_logic import decrypt, encrypt
+import sys
+sys.path.append("src")
 
-from src.Logic import AES_logic
-from src.Logic.AES_logic import AES, encrypt, decrypt
+
+from Logic import AES_logic
+from Logic.AES_logic import AES, encrypt, decrypt
 
 class EncryptionAESTest(unittest.TestCase):
     # Normal cases
@@ -97,3 +96,5 @@ class EncryptionAESTest(unittest.TestCase):
             encrypt(key, message)
 
 
+if __name__ == '__main__':
+    unittest.main()

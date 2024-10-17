@@ -7,11 +7,10 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics import Color, Rectangle, RoundedRectangle
 
-#import sys
-#sys.path.append("src")
-#Logic.AES_logic import decrypt, encrypt
+import sys
+sys.path.append("src")
 
-from src.Logic.AES_logic import decrypt, encrypt
+from Logic.AES_logic import decrypt, encrypt
 
 
 class CustomGridLayout(GridLayout):

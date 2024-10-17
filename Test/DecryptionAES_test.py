@@ -1,12 +1,10 @@
 import unittest
 
-#import sys
-#sys.path.append("src")
-#Logic import AES_logic
-#Logic.AES_logic import decrypt, encrypt
+import sys
+sys.path.append("src")
 
-from src.Logic import AES_logic
-from src.Logic.AES_logic import encrypt, decrypt
+from Logic import AES_logic
+from Logic.AES_logic import encrypt, decrypt
 
 class DecryptionAESTest(unittest.TestCase):
     # Normal cases
@@ -80,3 +78,6 @@ class DecryptionAESTest(unittest.TestCase):
         key = "mykey"
         with self.assertRaises(AES_logic.InvalidKeyLength):
             decrypt(key, message)
+
+if __name__ == '__main__':
+    unittest.main()

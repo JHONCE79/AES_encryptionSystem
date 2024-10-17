@@ -1,8 +1,7 @@
-#import sys
-#sys.path.append("src")
-#Logic.logic import *
+import sys
+sys.path.append("src")
 
-from src.Logic.logic import *
+from Logic import logic
 
 class EncryptDecryptWithoutKey(Exception):
     """
@@ -67,7 +66,7 @@ class AES:
         Expands and returns a list of key matrices for the given master_key.
         """
         # Initialize round keys with raw key material.
-        key_columns = bytes2matrix(master_key)
+        key_columns = logic.bytes2matrix(master_key)
         iteration_size = len(master_key) // 4
 
         i = 1
@@ -80,17 +79,17 @@ class AES:
                 # Circular shift.
                 word.append(word.pop(0))
                 # Map to S-BOX.
-                word = [s_box[b] for b in word]
+                word = [logic.s_box[b] for b in word]
                 # XOR with first byte of R-CON, since the others bytes of R-CON are 0.
-                word[0] ^= r_con[i]
+                word[0] ^= logic.r_con[i]
                 i += 1
             elif len(master_key) == 32 and len(key_columns) % iteration_size == 4:
                 # Run word through S-box in the fourth iteration when using a
                 # 256-bit key.
-                word = [s_box[b] for b in word]
+                word = [logic.s_box[b] for b in word]
 
             # XOR with equivalent word from previous iteration.
-            word = xor_bytes(word, key_columns[-iteration_size])
+            word = logic.xor_bytes(word, key_columns[-iteration_size])
             key_columns.append(word)
 
         # Group key words in 4x4 byte matrices.
@@ -102,21 +101,21 @@ class AES:
         """
         assert len(plaintext) == 16
 
-        plain_state = bytes2matrix(plaintext)
+        plain_state = logic.bytes2matrix(plaintext)
 
-        add_round_key(plain_state, self._key_matrices[0])
+        logic.add_round_key(plain_state, self._key_matrices[0])
 
         for i in range(1, self.n_rounds):
-            sub_bytes(plain_state)
-            shift_rows(plain_state)
-            mix_columns(plain_state)
-            add_round_key(plain_state, self._key_matrices[i])
+            logic.sub_bytes(plain_state)
+            logic.shift_rows(plain_state)
+            logic.mix_columns(plain_state)
+            logic.add_round_key(plain_state, self._key_matrices[i])
 
-        sub_bytes(plain_state)
-        shift_rows(plain_state)
-        add_round_key(plain_state, self._key_matrices[-1])
+        logic.sub_bytes(plain_state)
+        logic.shift_rows(plain_state)
+        logic.add_round_key(plain_state, self._key_matrices[-1])
 
-        return matrix2bytes(plain_state)
+        return logic.matrix2bytes(plain_state)
 
     def decrypt_block(self, ciphertext):
         """
@@ -124,21 +123,21 @@ class AES:
         """
         assert len(ciphertext) == 16
 
-        cipher_state = bytes2matrix(ciphertext)
+        cipher_state = logic.bytes2matrix(ciphertext)
 
-        add_round_key(cipher_state, self._key_matrices[-1])
-        inv_shift_rows(cipher_state)
-        inv_sub_bytes(cipher_state)
+        logic.add_round_key(cipher_state, self._key_matrices[-1])
+        logic.inv_shift_rows(cipher_state)
+        logic.inv_sub_bytes(cipher_state)
 
         for i in range(self.n_rounds - 1, 0, -1):
-            add_round_key(cipher_state, self._key_matrices[i])
-            inv_mix_columns(cipher_state)
-            inv_shift_rows(cipher_state)
-            inv_sub_bytes(cipher_state)
+            logic.add_round_key(cipher_state, self._key_matrices[i])
+            logic.inv_mix_columns(cipher_state)
+            logic.inv_shift_rows(cipher_state)
+            logic.inv_sub_bytes(cipher_state)
 
-        add_round_key(cipher_state, self._key_matrices[0])
+        logic.add_round_key(cipher_state, self._key_matrices[0])
 
-        return matrix2bytes(cipher_state)
+        return logic.matrix2bytes(cipher_state)
 
     def encrypt_cbc(self, plaintext, iv):
         """
@@ -147,13 +146,13 @@ class AES:
         """
         assert len(iv) == 16
 
-        plaintext = pad(plaintext)
+        plaintext = logic.pad(plaintext)
 
         blocks = []
         previous = iv
-        for plaintext_block in split_blocks(plaintext):
+        for plaintext_block in logic.split_blocks(plaintext):
             # CBC mode encrypt: encrypt(plaintext_block XOR previous)
-            block = self.encrypt_block(xor_bytes(plaintext_block, previous))
+            block = self.encrypt_block(logic.xor_bytes(plaintext_block, previous))
             blocks.append(block)
             previous = block
 
@@ -168,12 +167,12 @@ class AES:
 
         blocks = []
         previous = iv
-        for ciphertext_block in split_blocks(ciphertext):
+        for ciphertext_block in logic.split_blocks(ciphertext):
             # CBC mode decrypt: previous XOR decrypt(ciphertext)
-            blocks.append(xor_bytes(previous, self.decrypt_block(ciphertext_block)))
+            blocks.append(logic.xor_bytes(previous, self.decrypt_block(ciphertext_block)))
             previous = ciphertext_block
 
-        return unpad(b''.join(blocks))
+        return logic.unpad(b''.join(blocks))
 
 
 
