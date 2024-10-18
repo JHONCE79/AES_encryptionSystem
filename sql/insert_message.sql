@@ -1,0 +1,1 @@
+INSERT INTO messages ("key", encrypted_message) VALUES (%s, %s);

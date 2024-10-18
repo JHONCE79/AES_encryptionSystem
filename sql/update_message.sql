@@ -1,0 +1,1 @@
+UPDATE messages SET "key" = %s, encrypted_message = %s WHERE id = %s;

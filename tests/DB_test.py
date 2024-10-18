@@ -2,12 +2,9 @@ import sys
 import os
 import unittest
 
-# Agregar el directorio padre al sys.path para poder importar DB
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
-sys.path.insert(0, parent_dir)
+sys.path.append("src")
 
-from DB.CRUD import Database  # Importar la clase Database
+from Controller.messages_controller import Database  # Importar la clase Database
 
 class TestDatabase(unittest.TestCase):
     @classmethod
