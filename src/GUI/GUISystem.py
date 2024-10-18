@@ -4,10 +4,10 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from kivy.uix.boxlayout import BoxLayout
-from kivy.graphics import Color, Rectangle, RoundedRectangle
-
+from kivy.graphics import Color, Rectangle
+import psycopg2
 import sys
+
 sys.path.append("src")
 
 from Logic.AES_logic import decrypt, encrypt
@@ -16,12 +16,9 @@ from Logic.AES_logic import decrypt, encrypt
 class CustomGridLayout(GridLayout):
     def __init__(self, **kwargs):
         super(CustomGridLayout, self).__init__(**kwargs)
-        # Usar Canvas para dibujar el fondo
         with self.canvas.before:
-            Color(0.231, 0.118, 0.251)  # Color azul (R, G, B, A)
+            Color(0.231, 0.118, 0.251)
             self.rect = Rectangle(size=self.size, pos=self.pos)
-
-        # Actualizar el tamaño y la posición del fondo cuando cambien los del layout
         self.bind(size=self._update_rect, pos=self._update_rect)
 
     def _update_rect(self, instance, value):
@@ -29,11 +26,31 @@ class CustomGridLayout(GridLayout):
         self.rect.size = instance.size
 
 
+class Database:
+    def __init__(self):
+        self.connection = psycopg2.connect(
+            host="ep-delicate-violet-a52i7h4n.us-east-2.aws.neon.tech",
+            database="neondb",
+            user="neondb_owner",
+            password="20CfjJKWmMVb",
+            sslmode="require"
+        )
+        self.cursor = self.connection.cursor()
+
+    def save_encrypted_message(self, key, message):
+        try:
+            self.cursor.execute("INSERT INTO messages (key, encrypted_message) VALUES (%s, %s)", (key, message))
+            self.connection.commit()
+            return True
+        except Exception as e:
+            print(f"Error al guardar el mensaje: {e}")
+            return False
+
+
 class MenuScreen(Screen):
     def __init__(self, **kwargs):
         super(MenuScreen, self).__init__(**kwargs)
         contenedor = CustomGridLayout(cols=1, padding=10, spacing=10)
-
         contenedor.add_widget(Label(text="WELCOME TO THE ENCRYPTION SYSTEM", font_size=35))
         contenedor.add_widget(Label(text="Do you want to encrypt or decrypt?", font_size=25))
 
@@ -48,7 +65,6 @@ class MenuScreen(Screen):
         self.add_widget(contenedor)
 
     def go_to_encrypt(self, instance):
-        print("Cambiando a la pantalla de encriptación")
         self.manager.current = 'encrypt'
 
     def go_to_decrypt(self, instance):
@@ -89,7 +105,12 @@ class EncryptScreen(Screen):
             encrypted_message = encrypt(key, message)
             encrypted_message_hex = encrypted_message.hex()
 
-            self.encrypted_message.text = encrypted_message_hex
+            # Usar App.get_running_app() en lugar de self.manager.app
+            if App.get_running_app().database.save_encrypted_message(key, encrypted_message_hex):
+                self.encrypted_message.text = encrypted_message_hex
+                print("Mensaje guardado en la base de datos.")
+            else:
+                print("No se pudo guardar el mensaje en la base de datos.")
 
         except Exception as e:
             self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
@@ -118,8 +139,8 @@ class DecryptScreen(Screen):
         self.message = TextInput()
         contenedor.add_widget(self.message)
 
-        self.encrypted_message = TextInput()
-        contenedor.add_widget(self.encrypted_message)
+        self.decrypted_message = TextInput()
+        contenedor.add_widget(self.decrypted_message)
 
         decrypt_button = Button(text="Decrypt")
         contenedor.add_widget(decrypt_button)
@@ -138,7 +159,7 @@ class DecryptScreen(Screen):
     def clear_fields(self):
         self.password.text = ""
         self.message.text = ""
-        self.encrypted_message.text = ""
+        self.decrypted_message.text = ""
 
     def decrypt(self, instance):
         try:
@@ -148,7 +169,7 @@ class DecryptScreen(Screen):
             encrypted_message_bytes = bytes.fromhex(encrypted_message)
             decrypted_message = decrypt(key, encrypted_message_bytes)
 
-            self.encrypted_message.text = decrypted_message.decode()
+            self.decrypted_message.text = decrypted_message.decode()
 
         except Exception as e:
             self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
@@ -180,6 +201,7 @@ class ErrorScreen(Screen):
 
 class AESapp(App):
     def build(self):
+        self.database = Database()  # Inicializar la base de datos
         contenedor = ScreenManager()
         contenedor.add_widget(MenuScreen(name='menu'))
         contenedor.add_widget(EncryptScreen(name='encrypt'))
