@@ -46,7 +46,7 @@ The project is organized into two main directories: `src` and `tests`.
 
 Run the following command in your terminal:
 
-    git clone "https://github.com/PaulaS06/AES_encryptionSystem.git"
+    git clone "https://github.com/T-cordoba/AES_encryptionSystem.git"
 
 ### 2. Navigate to the Project Directory:
 
