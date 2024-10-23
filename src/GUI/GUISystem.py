@@ -91,7 +91,6 @@ class EncryptScreen(Screen):
             encrypted_message = encrypt(key, message)
             encrypted_message_hex = encrypted_message.hex()
 
-            # Usar App.get_running_app() en lugar de self.manager.app
             if App.get_running_app().database.save_message(key, encrypted_message_hex):
                 self.encrypted_message.text = encrypted_message_hex
                 print("Mensaje guardado en la base de datos.")
