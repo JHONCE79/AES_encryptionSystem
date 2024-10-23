@@ -98,4 +98,4 @@ To verify the system using unit tests, navigate to the `tests` directory and run
 - The unit tests validate the program's behavior in both typical and edge cases.
 - To run the tests, you need to install the `unittest` package by running:
 
-    pip install unittes
+    pip install unittest
