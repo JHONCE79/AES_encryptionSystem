@@ -1,16 +1,19 @@
 import psycopg2
+import sys
+sys.path.append(".")
+import secret_config
 
 class Database:
     def __init__(self):
         self.connection = psycopg2.connect(
-            host="ep-delicate-violet-a52i7h4n.us-east-2.aws.neon.tech",
-            database="neondb",
-            user="neondb_owner",
-            password="20CfjJKWmMVb",
-            sslmode="require"
+            host = secret_config.host,
+            database = secret_config.database,
+            user = secret_config.user,
+            password = secret_config.password,
+            sslmode = secret_config.sslmode
         )
         self.cursor = self.connection.cursor()
-        self.create_table()  # Asegúrate de que esto se llama
+        self.create_table()
 
     def create_table(self):
         create_table_query = """
@@ -30,20 +33,22 @@ class Database:
                 (key, message)
             )
             self.connection.commit()
-            return True  # Indica que el mensaje se guardó exitosamente
+            return True
         except Exception as e:
             print(f"Error al guardar el mensaje: {e}")
             self.connection.rollback()
-            return False  # Indica que hubo un error
+            return False
 
     def read_messages(self):
         self.cursor.execute('SELECT * FROM messages;')
         rows = self.cursor.fetchall()
+        messages = []
         if rows:
             for row in rows:
-                print(f'ID: {row[0]}, Key: {row[1]}, Message: {row[2]}')
+                messages.append(f'ID: {row[0]}, Key: {row[1]}, Message: {row[2]}')
         else:
-            print("No hay mensajes disponibles.")
+            messages.append("No hay mensajes disponibles.")
+        return "\n".join(messages)
 
     def update_message(self, id, key, message):
         try:
@@ -64,6 +69,15 @@ class Database:
             print("Mensaje eliminado exitosamente.")
         except Exception as e:
             print(f"Error al eliminar el mensaje: {e}")
+            self.connection.rollback()
+
+    def delete_all_messages(self):
+        try:
+            self.cursor.execute('DELETE FROM messages;')
+            self.connection.commit()
+            print("Todos los mensajes han sido eliminados exitosamente.")
+        except Exception as e:
+            print(f"Error al eliminar todos los mensajes: {e}")
             self.connection.rollback()
 
     def close(self):

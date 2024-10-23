@@ -3,8 +3,8 @@ import unittest
 import sys
 sys.path.append("src")
 
-from Logic import AES_logic
-from Logic.AES_logic import encrypt, decrypt
+from EncryptionSystem import AES_logic
+from EncryptionSystem.AES_logic import encrypt, decrypt
 
 class DecryptionAESTest(unittest.TestCase):
     # Normal cases

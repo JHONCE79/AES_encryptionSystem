@@ -4,8 +4,8 @@ import sys
 sys.path.append("src")
 
 
-from Logic import AES_logic
-from Logic.AES_logic import AES, encrypt, decrypt
+from EncryptionSystem import AES_logic
+from EncryptionSystem.AES_logic import AES, encrypt, decrypt
 
 class EncryptionAESTest(unittest.TestCase):
     # Normal cases

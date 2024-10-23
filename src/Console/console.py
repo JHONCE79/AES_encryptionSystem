@@ -1,7 +1,7 @@
 import sys
 sys.path.append("src")
 
-from Logic.AES_logic import encrypt, decrypt
+from EncryptionSystem.AES_logic import encrypt, decrypt
 
 class Console:
 

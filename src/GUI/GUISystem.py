@@ -5,12 +5,12 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
-import psycopg2
 import sys
 
 sys.path.append("src")
 
-from Logic.AES_logic import decrypt, encrypt
+from EncryptionSystem.AES_logic import decrypt, encrypt
+from Controller import messages_controller
 
 
 class CustomGridLayout(GridLayout):
@@ -24,27 +24,6 @@ class CustomGridLayout(GridLayout):
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
-
-
-class Database:
-    def __init__(self):
-        self.connection = psycopg2.connect(
-            host="ep-delicate-violet-a52i7h4n.us-east-2.aws.neon.tech",
-            database="neondb",
-            user="neondb_owner",
-            password="20CfjJKWmMVb",
-            sslmode="require"
-        )
-        self.cursor = self.connection.cursor()
-
-    def save_encrypted_message(self, key, message):
-        try:
-            self.cursor.execute("INSERT INTO messages (key, encrypted_message) VALUES (%s, %s)", (key, message))
-            self.connection.commit()
-            return True
-        except Exception as e:
-            print(f"Error al guardar el mensaje: {e}")
-            return False
 
 
 class MenuScreen(Screen):
@@ -62,6 +41,10 @@ class MenuScreen(Screen):
         contenedor.add_widget(decrypt_button)
         decrypt_button.bind(on_press=self.go_to_decrypt)
 
+        see_messages_button = Button(text="See messages", background_color=(0.929, 0.741, 0.961))
+        contenedor.add_widget(see_messages_button)
+        see_messages_button.bind(on_press=self.go_to_see_messages)
+
         self.add_widget(contenedor)
 
     def go_to_encrypt(self, instance):
@@ -69,6 +52,9 @@ class MenuScreen(Screen):
 
     def go_to_decrypt(self, instance):
         self.manager.current = 'decrypt'
+
+    def go_to_see_messages(self, instance):
+        self.manager.current = 'see_messages'
 
 
 class EncryptScreen(Screen):
@@ -106,7 +92,7 @@ class EncryptScreen(Screen):
             encrypted_message_hex = encrypted_message.hex()
 
             # Usar App.get_running_app() en lugar de self.manager.app
-            if App.get_running_app().database.save_encrypted_message(key, encrypted_message_hex):
+            if App.get_running_app().database.save_message(key, encrypted_message_hex):
                 self.encrypted_message.text = encrypted_message_hex
                 print("Mensaje guardado en la base de datos.")
             else:
@@ -176,6 +162,70 @@ class DecryptScreen(Screen):
             self.manager.current = 'error'
 
 
+class SeeMessagesScreen(Screen):
+    def __init__(self, **kwargs):
+        super(SeeMessagesScreen, self).__init__(**kwargs)
+        contenedor = CustomGridLayout(cols=1, padding=10, spacing=10)
+
+        contenedor.add_widget(Label(text="Messages: "))
+        self.messages_textbox = TextInput(size_hint=(1, 1), multiline=True, readonly=True)
+        contenedor.add_widget(self.messages_textbox)
+
+        update_messages = Button(text="Update messages")
+        contenedor.add_widget(update_messages)
+        update_messages.bind(on_press=self.update_messages)
+
+        id_label = Label(text="Enter the ID of the message you want to delete: ")
+        contenedor.add_widget(id_label)
+        self.id_to_delete = TextInput(size_hint=(1, None), height=30)
+        contenedor.add_widget(self.id_to_delete)
+
+        delete_message = Button(text="Delete message")
+        contenedor.add_widget(delete_message)
+        delete_message.bind(on_press=self.delete_message)
+
+        delete_all_messages = Button(text="Delete all messages")
+        contenedor.add_widget(delete_all_messages)
+        delete_all_messages.bind(on_press=self.delete_all_messages)
+
+        back_button = Button(text="Back to Menu")
+        contenedor.add_widget(back_button)
+        back_button.bind(on_press=self.go_back)
+
+        self.add_widget(contenedor)
+
+    def go_back(self, instance):
+        self.manager.current = 'menu'
+
+    def update_messages(self, instance=None):  # Asegurarse de que la función acepte el parámetro 'instance'
+        messages = App.get_running_app().database.read_messages()
+        if messages is None:
+            messages = ""  # Asegurarse de que messages no sea None
+        self.messages_textbox.text = messages
+
+    def delete_message(self, instance):
+        message_id = self.id_to_delete.text
+        if message_id:
+            try:
+                App.get_running_app().database.delete_message(message_id)
+                self.update_messages()  # Actualizar la lista de mensajes después de la eliminación
+                self.id_to_delete.text = ""  # Limpiar el campo de texto
+            except Exception as e:
+                self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
+                self.manager.current = 'error'
+
+    def delete_all_messages(self, instance):
+        try:
+            App.get_running_app().database.delete_all_messages()
+            self.update_messages()  # Actualizar la lista de mensajes después de la eliminación
+        except Exception as e:
+            self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
+            self.manager.current = 'error'
+
+    def on_enter(self):
+        self.update_messages()  # Llamar a update_messages cuando se muestre la pantalla
+
+
 class ErrorScreen(Screen):
     def __init__(self, **kwargs):
         super(ErrorScreen, self).__init__(**kwargs)
@@ -201,11 +251,12 @@ class ErrorScreen(Screen):
 
 class AESapp(App):
     def build(self):
-        self.database = Database()  # Inicializar la base de datos
+        self.database = messages_controller.Database()
         contenedor = ScreenManager()
         contenedor.add_widget(MenuScreen(name='menu'))
         contenedor.add_widget(EncryptScreen(name='encrypt'))
         contenedor.add_widget(DecryptScreen(name='decrypt'))
+        contenedor.add_widget(SeeMessagesScreen(name='see_messages'))
         contenedor.add_widget(ErrorScreen(name='error'))
         return contenedor
 
