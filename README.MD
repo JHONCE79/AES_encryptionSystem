@@ -99,6 +99,7 @@ To verify the system using unit tests, navigate to the `tests` directory and run
 
 - The encryption key **must** be exactly 16 characters long for the AES algorithm to function correctly.
 - The unit tests validate the program's behavior in both typical and edge cases.
+- To use the database functionality, ensure that the `secret_config.py` file is present in the root of the project. This file should contain the necessary configuration for connecting to your database.
 - To run the tests, you need to install the `unittest` package by running:
 
-    pip install unittest
+    pip install unittes
