@@ -16,29 +16,17 @@ This project provides a text encryption and decryption tool using the AES (Advan
 
 ## How does it work?
 
-Once the program is executed, users can choose to encrypt or decrypt text via a menu. The process requires the following steps:
-
-1. **Menu Options:**
-    - The user is presented with three options:
-      1. Encrypt text
-      2. Decrypt text
-      3. Exit
-2. **Encryption/Decryption Process:**
-    - For encryption, the user is prompted to enter the text to encrypt and a 16-character key.
-    - For decryption, the user must input the encrypted text and the same 16-character key.
-3. **Output:**
-    - After providing the required inputs, the program will display the encrypted or decrypted result.
+The system uses the AES algorithm to encrypt and decrypt text. The AES algorithm is a symmetric key encryption algorithm that uses a 128-bit block size and a key size of 128, 192, or 256 bits. The system uses a 128-bit key to encrypt and decrypt text.
 
 ## Project Structure
 
-The project is organized into two main directories: `src` and `tests`.
+The project is divided into three main components:
 
-- **`src`:** Contains the core files needed to run the encryption and decryption system:
-  - `Console.py`: Main file that presents the console interface and handles user input for encryption and decryption.
-  - `AES.py`: Contains the AES encryption and decryption logic.
-  - `GuiSystem.py`: Provides the functions needed to run the system with a GUI built using **Kivy**.
-  
-- **`tests`:** Contains unit tests that check the system for normal, special, and error cases.
+1. **Console**: Contains the console-based system for encrypting and decrypting text and database operations.
+
+2. **GUI**: Contains the graphical user interface for the system.
+
+3. **Controller**: Contains the database controller for storing and retrieving encrypted text.
 
 ## Installation and Use
 
@@ -74,19 +62,27 @@ Install additional dependencies using the `requirements.txt` file:
 
     pip install -r requirements.txt
 
-### 5. Execute the Program
+### 5. Fill config_sample.py credentials
+
+To use the database functionality, fill the `config_sample.py` file with the necessary credentials and rename it to `config.py`.
+
+### 6. Execute the Program
 
 #### Console Execution:
 
 To run the program via the console, use the following command:
 
-    python src/Console/Console.py
+    python src/Console/console.py
+
+To run the database console execution, use the following command:
+
+    python src/Console/db_console_execution.py
 
 #### GUI Execution:
 
 To execute the program with a graphical interface, use this command:
 
-    python src/GUI/GuiSystem.py
+    python src/GUI/GUISystem.py
 
 ### 6. Running Tests
 
@@ -94,12 +90,12 @@ To verify the system using unit tests, navigate to the `tests` directory and run
 
     python tests/EncryptionAES_test.py
     python tests/DecryptionAES_test.py
+    python tests/DB_test.py
 
 ## Notes
 
-- The encryption key **must** be exactly 16 characters long for the AES algorithm to function correctly.
+- The encryption key **must** be exactly 16, 24 or 32 characters long for the AES algorithm to function correctly.
 - The unit tests validate the program's behavior in both typical and edge cases.
-- To use the database functionality, ensure that the `secret_config.py` file is present in the root of the project. This file should contain the necessary configuration for connecting to your database.
 - To run the tests, you need to install the `unittest` package by running:
 
     pip install unittes
