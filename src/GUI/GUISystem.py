@@ -197,10 +197,10 @@ class SeeMessagesScreen(Screen):
     def go_back(self, instance):
         self.manager.current = 'menu'
 
-    def update_messages(self, instance=None):  # Asegurarse de que la función acepte el parámetro 'instance'
+    def update_messages(self, instance=None):
         messages = App.get_running_app().database.read_messages()
         if messages is None:
-            messages = ""  # Asegurarse de que messages no sea None
+            messages = ""
         self.messages_textbox.text = messages
 
     def delete_message(self, instance):
@@ -208,8 +208,8 @@ class SeeMessagesScreen(Screen):
         if message_id:
             try:
                 App.get_running_app().database.delete_message(message_id)
-                self.update_messages()  # Actualizar la lista de mensajes después de la eliminación
-                self.id_to_delete.text = ""  # Limpiar el campo de texto
+                self.update_messages()
+                self.id_to_delete.text = ""
             except Exception as e:
                 self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
                 self.manager.current = 'error'
@@ -217,13 +217,13 @@ class SeeMessagesScreen(Screen):
     def delete_all_messages(self, instance):
         try:
             App.get_running_app().database.delete_all_messages()
-            self.update_messages()  # Actualizar la lista de mensajes después de la eliminación
+            self.update_messages()
         except Exception as e:
             self.manager.get_screen('error').set_error_message(f"Error: {str(e)}")
             self.manager.current = 'error'
 
     def on_enter(self):
-        self.update_messages()  # Llamar a update_messages cuando se muestre la pantalla
+        self.update_messages()
 
 
 class ErrorScreen(Screen):
