@@ -28,6 +28,11 @@ The project is divided into three main components:
 
 3. **Controller**: Contains the database controller for storing and retrieving encrypted text.
 
+
+## LINK OF THE PAGE:
+You just need to copy and paste this link in your navigator
+http://10.33.15.38:5000
+
 ## Installation and Use
 
 ### 1. Clone the Repository:

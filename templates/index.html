@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrado AES - Página Principal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Cifrado y Descifrado AES</h1>
+        
+        <!-- Formulario de cifrado -->
+        <form method="POST" action="/encrypt" class="my-4">
+            <div class="mb-3">
+                <label for="encryption_key" class="form-label">Clave de Cifrado (16, 24 o 32 caracteres):</label>
+                <input type="text" class="form-control" id="encryption_key" name="encryption_key" required maxlength="32">
+            </div>
+            <div class="mb-3">
+                <label for="text_to_encrypt" class="form-label">Texto a Cifrar:</label>
+                <input type="text" class="form-control" id="text_to_encrypt" name="text_to_encrypt" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Cifrar</button>
+        </form>
+        
+        <!-- Mostrar el texto cifrado si está disponible -->
+        {% if encrypted_text %}
+            <div class="alert alert-warning">
+                <strong>Texto Cifrado:</strong>
+                <input type="text" class="form-control mt-2" value="{{ encrypted_text }}" readonly>
+                <p class="mt-2">Copie el texto cifrado y péguelo en el campo de descifrado para recuperar el mensaje original.</p>
+            </div>
+        {% endif %}
+        
+        <!-- Formulario de descifrado -->
+        <form method="POST" action="/decrypt" class="my-4">
+            <div class="mb-3">
+                <label for="encryption_key" class="form-label">Clave de Descifrado (16, 24 o 32 caracteres):</label>
+                <input type="text" class="form-control" id="encryption_key" name="encryption_key" required maxlength="32">
+            </div>
+            <div class="mb-3">
+                <label for="text_to_decrypt" class="form-label">Texto a Descifrar:</label>
+                <input type="text" class="form-control" id="text_to_decrypt" name="text_to_decrypt" required>
+            </div>
+            <button type="submit" class="btn btn-success">Descifrar</button>
+        </form>
+
+        <!-- Botón para redirigir a la base de datos en Neon Tech -->
+        <div class="text-center mt-4">
+            <a href="/view-database" class="btn btn-info">Visualizar base de datos</a>
+        </div>
+
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-info mt-4">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

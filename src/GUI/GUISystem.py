@@ -8,7 +8,7 @@ from kivy.graphics import Color, Rectangle
 import sys
 
 sys.path.append("src")
-
+    
 from EncryptionSystem.AES_logic import decrypt, encrypt
 from Controller import messages_controller
 
