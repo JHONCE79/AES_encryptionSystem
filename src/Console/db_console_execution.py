@@ -5,40 +5,40 @@ from Controller import messages_controller
 def main():
     db = messages_controller.Database()
     while True:
-        print("\nCRUD Menu:")
-        print("1. Create Message")
-        print("2. Read Message")
-        print("3. Update Message")
-        print("4. Delete Message")
-        print("5. Exit")
+        print("\nMenú CRUD:")
+        print("1. Crear Mensaje")
+        print("2. Leer Mensaje")
+        print("3. Actualizar Mensaje")
+        print("4. Eliminar Mensaje")
+        print("5. Salir")
 
-        choice = input(" Choice an option (1-5): ")
+        choice = input("Selecciona una opción (1-5): ")
 
         if choice == '1':
-            key = input("Enter the key: ")
-            message = input("Enter the encrypted message: ")
+            key = input("Ingresa la clave: ")
+            message = input("Ingresa el mensaje encriptado: ")
             db.save_message(key, message)
 
         elif choice == '2':
-            db.read_messages()
+            print(db.read_messages())  
 
         elif choice == '3':
-            id = int(input("Enter the ID of the message to update: "))
-            key = input("Enter the new key: ")
-            message = input("Enter the new encrypted message: ")
+            id = int(input("Ingresa el ID del mensaje a actualizar: "))
+            key = input("Ingresa la nueva clave: ")
+            message = input("Ingresa el nuevo mensaje encriptado: ")
             db.update_message(id, key, message)
 
         elif choice == '4':
-            id = int(input("Enter the ID of the message to delete: "))
+            id = int(input("Ingresa el ID del mensaje a eliminar: "))
             db.delete_message(id)
 
         elif choice == '5':
-            print("Exiting...")
+            print("Saliendo...")
             db.close()
             break
 
         else:
-            print("Invalid option, please choose again.")
+            print("Opción inválida, por favor elige de nuevo.")
 
 if __name__ == "__main__":
     main()

@@ -7,12 +7,12 @@ Santiago Tavera
 
 ## Fork Authors:
 
-Tomás Córdoba  
-Samuel Villa
+John Steven Ceballos Agudelo
+Felix Fabian Prada
 
 ## Purpose
 
-This project provides a text encryption and decryption tool using the AES (Advanced Encryption Standard) algorithm. It allows users to securely encrypt a piece of text and decrypt it later using the same key. The system offers both a console-based and a graphical user interface (GUI) for performing these operations.
+This project provides a text encytool using the AES (Advanced Encryption Standard) algorithm. It allows users to securely encrypt a piece of text and decrypt it later using the same key. The system offers both a console-based and a graphical user interface (GUI) for performing these operations.
 
 ## How does it work?
 

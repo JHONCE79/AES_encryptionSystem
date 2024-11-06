@@ -12,40 +12,39 @@ class Console:
     def show_welcome():
         print()
         print("================================")
-        print("WELCOME TO THE ENCRYPTION SYSTEM")
+        print("BIENVENIDO AL SISTEMA DE ENCRIPTACIÓN")
         print("================================")
         print()
 
-
     @staticmethod
     def display_menu():
-        print("Encryption System Menu")
-        print("1. Encrypt a message")
-        print("2. Decrypt a message")
-        print("3. Exit")
+        print("Menú del Sistema de Encriptación")
+        print("1. Encriptar un mensaje")
+        print("2. Desencriptar un mensaje")
+        print("3. Salir")
         print()
 
     def get_user_choice(self):
-        return input("Select an option (1-3): ")
+        return input("Selecciona una opción (1-3): ")
 
     def get_master_key(self):
-        return input("Enter the encryption key: (must have exactly 16, 24 or 32 characters): ")
+        return input("Ingresa la clave de encriptación: (debe tener exactamente 16, 24 o 32 caracteres): ")
 
     def get_message(self):
-        return input("Enter the message: ")
+        return input("Ingresa el mensaje: ")
 
     def encrypt_message(self):
         key = self.get_master_key()
         message = self.get_message()
         encrypted = encrypt(key, message)
-        print("Encrypted Message:", encrypted.hex())
+        print("Mensaje Encriptado:", encrypted.hex())
 
     def decrypt_message(self):
         key = self.get_master_key()
-        encrypted_hex = input("Enter the encrypted message (in hexadecimal): ")
+        encrypted_hex = input("Ingresa el mensaje encriptado (en hexadecimal): ")
         encrypted_bytes = bytes.fromhex(encrypted_hex)
         decrypted = decrypt(key, encrypted_bytes)
-        print("Decrypted Message: ", decrypted.decode("utf-8"))
+        print("Mensaje Desencriptado: ", decrypted.decode("utf-8"))
 
     def run(self):
         while True:
@@ -58,10 +57,10 @@ class Console:
             elif choice == "2":
                 self.decrypt_message()
             elif choice == "3":
-                print("Exiting the Encryption System. Goodbye!")
+                print("Saliendo del Sistema de Encriptación. ¡Adiós!")
                 break
             else:
-                print("Invalid choice. Please select a valid option. \n")
+                print("Opción inválida. Por favor selecciona una opción válida. \n")
 
 if __name__ == "__main__":
     console = Console()

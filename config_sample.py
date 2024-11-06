@@ -8,8 +8,11 @@ password: The password for the database
 sslmode: The SSL mode for the connection
 """
 
-host = ""
-database = ""
-user = ""
-password = ""
-sslmode = ""
+# Do not expose your Neon credentials to the browser
+# config.py
+
+host = 'ep-mute-term-a54uz5mp.us-east-2.aws.neon.tech'
+database = 'neondb'
+user = 'neondb_owner'
+password = 'zSWbNsK0hOD4'
+sslmode = 'require'
